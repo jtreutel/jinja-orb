@@ -3,7 +3,6 @@ from jinja2 import Environment, FileSystemLoader
 
 env = Environment(loader=FileSystemLoader(''))
 
-#TODO: Fix this, it doesn't work
 def get_templates_in_dir(path):
   file_list = []
   for extension in ["j2", "jinja"]:

@@ -1,5 +1,5 @@
 description: >
-  REnders
+  This job renders Jinja templates at the specified paths.
 # What will this job do?
 # Descriptions should be short, simple, and clear.
 
@@ -13,10 +13,12 @@ parameters:
     type: string
     description: "Local path to which render Jinja templates will be written."
 steps:
+  - checkout
   - run:
       name: Install deps
       command: pip3 install pyyaml jinja2
   - run:
+      shell: /home/circleci/.pyenv/shims/python
       environment:
         PARAM_PATH: <<parameters.path>>
         PARAM_OUTPUTDIR: <<parameters.outputdir>>

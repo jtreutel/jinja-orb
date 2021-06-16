@@ -6,8 +6,29 @@ description: >
 usage:
   version: 2.1
   orbs:
-    <orb-name>: <namespace>/<orb-name>@1.2.3
+    jinja: jtreutel/jinja@1.0.0
+  jobs:
+    render-a-single-template:
+    # Render all the templates in a directory and write them to another directory
+      executor: jinja/default
+      steps:
+        - checkout
+        - jinja/render:
+            path: templates/foo.j2
+            outputdir: rendered/
+    render-some-templates:
+    # Render all the templates in a directory and write them to another directory
+      executor: jinja/default
+      steps:
+        - checkout
+        - jinja/render:
+            path: templates/
+            outputdir: rendered/
   workflows:
-    use-my-orb:
+    main:
       jobs:
-        - <orb-name>/<job-name>
+        - render-a-single-template
+        - render-some-templates
+        - jinja/render:               #Use a job instead of a command
+            path: templates/
+            outputdir: rendered/
