@@ -23,7 +23,7 @@ usage:
         - checkout
         - jinja/render:
             path: templates/
-            outputdir: rendered/   
+            outputdir: rendered/
   workflows:
     main:
       jobs:
