@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import re, os, glob, yaml, sys
 from jinja2 import Environment, FileSystemLoader
 
