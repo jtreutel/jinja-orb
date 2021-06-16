@@ -13,6 +13,7 @@ parameters:
     type: string
     description: "Local path to which render Jinja templates will be written."
 steps:
+  - checkout
   - run:
       name: Install deps
       command: pip3 install pyyaml jinja2
