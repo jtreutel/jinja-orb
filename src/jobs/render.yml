@@ -1,5 +1,5 @@
 description: >
-  REnders
+  This job renders Jinja templates at the specified paths.
 # What will this job do?
 # Descriptions should be short, simple, and clear.
 
