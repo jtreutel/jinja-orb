@@ -11,8 +11,8 @@ def get_templates_in_dir(path):
   return file_list 
 
 #Use the path and output directory supplied by the orb arguments
-supplied_path = sys.argv[1].rstrip("/")
-output_dir = sys.argv[2].rstrip("/")
+supplied_path = os.environ['PARAM_PATH'].rstrip("/")
+output_dir = os.environ['PARAM_OUTPUTDIR'].rstrip("/")
 
 
 templates_to_render = []
