@@ -1,0 +1,21 @@
+description: >
+  This command renders Jinja templates at the specified paths.
+# What will this command do?
+# Descriptions should be short, simple, and clear.
+parameters:
+  path:
+    type: string
+    description: "Path to template file or directory containing .j2 or .jinja files."
+  outputdir:
+    type: string
+    description: "Local path to which render Jinja templates will be written."
+steps:
+  - run:
+      name: Install deps
+      command: pip3 install pyyaml jinja2
+  - run:
+      environment:
+        PARAM_PATH: <<parameters.path>>
+        PARAM_OUTPUTDIR: <<parameters.outputdir>>
+      name: Render templates
+      command: <<include(scripts/render.py)>>
