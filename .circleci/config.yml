@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  jinja-orb: jtreutel/jinja-orb@<<pipeline.parameters.dev-orb-version>>
+  jinja: jtreutel/jinja@<<pipeline.parameters.dev-orb-version>>
   orb-tools: circleci/orb-tools@10.0
 
 environment: &testing_env_vars  #environment variables used for rendering test templates
@@ -32,7 +32,7 @@ jobs:
       - image: cimg/python:3.9
     steps:
       - checkout
-      - jinja-orb/render: #calls command, render all templates in a directory
+      - jinja/render: #calls command, render all templates in a directory
           path: ./src/tests/testdir/
           outputdir: ./src/tests/command_output/
       - run: find ./src/tests/command_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
@@ -46,7 +46,7 @@ workflows:
       - orb-tools/pack # Pack orb source
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
-          orb-name: jtreutel/jinja-orb
+          orb-name: jtreutel/jinja
           context: orb-publishing # A restricted context containing your private publishing credentials. Will only execute if approved by an authorized user.
           requires:
             - orb-tools/lint
@@ -70,7 +70,7 @@ workflows:
     jobs:
       # Run any integration tests defined within the `jobs` key.
       - test-render-command
-      - jinja-orb/render:    #calls job
+      - jinja/render:    #calls job
           path: ./src/tests/example1.j2
           outputdir: ./src/tests/job_output/
           post-steps: 
@@ -83,14 +83,14 @@ workflows:
       # be skipped.
       # e.g. [semver:patch] will cause a patch version to be published.
       - orb-tools/dev-promote-prod-from-commit-subject:
-          orb-name: jtreutel/jinja-orb
+          orb-name: jtreutel/jinja
           context: orb-publishing
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
             - test-render-command
-            - jinja-orb/render
+            - jinja/render
           filters:
             branches:
               only:
