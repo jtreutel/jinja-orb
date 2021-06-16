@@ -1,11 +1,11 @@
 description: >
-  This is a sample executor using Docker and Node.
+  This is a Docker executor that includes the specified version of Python.
 docker:
-  - image: 'cimg/node:<<parameters.tag>>'
+  - image: 'cimg/python:<<parameters.tag>>'
 parameters:
   tag:
-    default: lts
+    default: 3.9
     description: >
-      Pick a specific circleci/node image variant:
-      https://hub.docker.com/r/cimg/node/tags
+      Pick a specific cimg/python image variant:
+      https://hub.docker.com/r/cimg/python/tags
     type: string

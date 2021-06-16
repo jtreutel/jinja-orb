@@ -1,11 +1,14 @@
 version: 2.1
 
 orbs:
-  # Replace this with your own!
-  jinja-orb: jtreutel/jinja-orb@<<pipeline.parameters.dev-orb-version>>
+  jinja: jtreutel/jinja@<<pipeline.parameters.dev-orb-version>>
   orb-tools: circleci/orb-tools@10.0
-  bats: circleci/bats@1.0
-  shellcheck: circleci/shellcheck@2.0
+
+environment: &testing_env_vars  #environment variables used for rendering test templates
+  TEST_NAME: Iago Montana
+  TEST_PERSON: brother
+  TEST_ACTION: perish
+
 
 # Pipeline Parameters
 ## These parameters are used internally by orb-tools. Skip to the Jobs section.
@@ -23,40 +26,33 @@ parameters:
     default: "dev:alpha"
 
 jobs:
-  # Define one or more jobs which will utilize your orb's commands and parameters to validate your changes.
-  integration-test-1:
+  # Jobs for validating changes to the orb.  Used in the "integration-test_deploy" workflow
+  test-render-command:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.9
     steps:
       - checkout
-      # "greet" is a sample command packaged with this orb config.
-      # This sample integration test will run as long as the greet command exists. Once you remove the greet command you should remove this line.
-      # Push new changes first, before adding new tests to your config.
-      - jinja-orb/greet
+      - jinja/render: #calls command, render all templates in a directory
+          path: ./src/tests/testdir/
+          outputdir: ./src/tests/command_output/
+      - run: find ./src/tests/command_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
+      
 
 workflows:
-  # Prior to producing a development orb (which requires credentials) basic validation, linting, and even unit testing can be performed.
-  # This workflow will run on every commit
   test-pack:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint # Lint Yaml files
       - orb-tools/pack # Pack orb source
-      - shellcheck/check:
-          dir: ./src/scripts
-          exclude: SC2148
-      # optional: Run BATS tests against your scripts
-      - bats/run:
-          path: ./src/tests
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
-          orb-name: jtreutel/jinja-orb
+          orb-name: jtreutel/jinja
           context: orb-publishing # A restricted context containing your private publishing credentials. Will only execute if approved by an authorized user.
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - bats/run
-            - shellcheck/check
+            #- bats/run
+            #- shellcheck/check
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:
@@ -73,7 +69,13 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      - integration-test-1
+      - test-render-command
+      - jinja/render:    #calls job
+          path: ./src/tests/example1.j2
+          outputdir: ./src/tests/job_output/
+          post-steps: 
+            - run:
+                command: find ./src/tests/job_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       # as that will determine whether a patch, minor or major
@@ -81,13 +83,14 @@ workflows:
       # be skipped.
       # e.g. [semver:patch] will cause a patch version to be published.
       - orb-tools/dev-promote-prod-from-commit-subject:
-          orb-name: jtreutel/jinja-orb
+          orb-name: jtreutel/jinja
           context: orb-publishing
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
-            - integration-test-1
+            - test-render-command
+            - jinja/render
           filters:
             branches:
               only:
