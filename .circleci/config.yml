@@ -36,7 +36,7 @@ jobs:
   #        path: ./src/tests/testdir/
   #        outputdir: ./src/tests/command_output/
   #    - run: find ./src/tests/command_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
-      
+
 
 workflows:
   test-pack:
@@ -73,7 +73,7 @@ workflows:
       #- jinja/render:    #calls job
       #    path: ./src/tests/example1.j2
       #    outputdir: ./src/tests/job_output/
-      #    post-steps: 
+      #    post-steps:
       #      - run:
       #          command: find ./src/tests/job_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
       # Publish a semver version of the orb. relies on
