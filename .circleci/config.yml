@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  #jinja: jtreutel/jinja@<<pipeline.parameters.dev-orb-version>>
+  jinja: jtreutel/jinja@<<pipeline.parameters.dev-orb-version>>
   orb-tools: circleci/orb-tools@10.0
 
 environment: &testing_env_vars  #environment variables used for rendering test templates
@@ -27,15 +27,15 @@ parameters:
 
 jobs:
   # Jobs for validating changes to the orb.  Used in the "integration-test_deploy" workflow
-  #test-render-command:
-  #  docker:
-  #    - image: cimg/python:3.9
-  #  steps:
-  #    - checkout
-  #    - jinja/render: #calls command, render all templates in a directory
-  #        path: ./src/tests/testdir/
-  #        outputdir: ./src/tests/command_output/
-  #    - run: find ./src/tests/command_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
+  test-render-command:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - jinja/render: #calls command, render all templates in a directory
+          path: ./src/tests/testdir/
+          outputdir: ./src/tests/command_output/
+      - run: find ./src/tests/command_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
 
 
 workflows:
@@ -69,13 +69,13 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      #- test-render-command
-      #- jinja/render:    #calls job
-      #    path: ./src/tests/example1.j2
-      #    outputdir: ./src/tests/job_output/
-      #    post-steps:
-      #      - run:
-      #          command: find ./src/tests/job_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
+      - test-render-command
+      - jinja/render:    #calls job
+          path: ./src/tests/example1.j2
+          outputdir: ./src/tests/job_output/
+          post-steps:
+            - run:
+                command: find ./src/tests/job_output/ -type f -print -exec cat {} \;   # print contents of rendered templates; each line prefixed with filename
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       # as that will determine whether a patch, minor or major
