@@ -5,6 +5,8 @@ from jinja2 import Environment, FileSystemLoader
 
 env = Environment(loader=FileSystemLoader(''))
 
+print(os.getcwd())
+
 def get_templates_in_dir(path):
   file_list = []
   for extension in ["j2", "jinja"]:
