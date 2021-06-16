@@ -17,7 +17,7 @@ steps:
       name: Install deps
       command: pip3 install pyyaml jinja2
   - run:
-      shell: ~/.pyenv/shims/python
+      shell: /home/circleci/.pyenv/shims/python
       environment:
         PARAM_PATH: <<parameters.path>>
         PARAM_OUTPUTDIR: <<parameters.outputdir>>
