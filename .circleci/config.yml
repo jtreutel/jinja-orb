@@ -30,8 +30,7 @@ jobs:
   # Jobs for validating changes to the orb.  Used in the "integration-test_deploy" workflow
   test-render-command:
     <<: *testing_env_vars
-    docker:
-      - image: cimg/python:3.9
+    executor: jinja/default
     steps:
       - checkout
       - jinja/render: #calls command, render all templates in a directory
