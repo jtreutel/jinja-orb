@@ -18,4 +18,4 @@ steps:
         PARAM_PATH: <<parameters.path>>
         PARAM_OUTPUTDIR: <<parameters.outputdir>>
       name: Render templates
-      command: <<include(scripts/render.py)>>
+      command: python3 -c <<include(scripts/render.py)>>
