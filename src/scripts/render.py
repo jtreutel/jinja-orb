@@ -19,7 +19,6 @@ if os.path.isfile(supplied_path):
   templates_to_render.append(supplied_path)
 # If supplied path is a directory, scan it for .j2 and .jinja files
 elif os.path.isdir(supplied_path):
-  print("It's a directory!") #DEBUG
   templates_to_render = get_templates_in_dir(supplied_path)
   print(templates_to_render)
 else:
