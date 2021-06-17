@@ -1,23 +1,21 @@
 description: >
-  Sample example description.
+  The orbs is called three times in the config below.  Twice it is called as a command in the "jobs" section where it renders a single template and a directory of template.  It is also called once as a job in the "workflows" section.
 # Provide a use-case based example for using this orb.
 # Everything in the `usage` section will be displayed in the orb registry.
 # Comments are not retained.
 usage:
   version: 2.1
   orbs:
-    jinja: jtreutel/jinja@1.0.0
+    jinja: jtreutel/jinja@0.1.1
   jobs:
-    render-a-single-template:
-    # Render all the templates in a directory and write them to another directory
+    render-file:              # Render a single file
       executor: jinja/default
       steps:
         - checkout
         - jinja/render:
             path: templates/foo.j2
             outputdir: rendered/
-    render-some-templates:
-    # Render all the templates in a directory and write them to another directory
+    render-directory:         # Render a directory full of files
       executor: jinja/default
       steps:
         - checkout
@@ -27,8 +25,8 @@ usage:
   workflows:
     main:
       jobs:
-        - render-a-single-template
-        - render-some-templates
+        - render-file
+        - render-directory
         - jinja/render:               #Use a job instead of a command
             path: templates/
             outputdir: rendered/
