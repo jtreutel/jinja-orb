@@ -12,6 +12,20 @@ parameters:
   outputdir:
     type: string
     description: "Local path to which render Jinja templates will be written."
+  persist-workspace:
+    default: false
+    description: Persist files to (cci) workspace for use in subsequent jobs
+    type: boolean
+  workspace-path:
+    default: .
+    description: Path of the workspace to persist to relative to workspace-root.
+    type: string
+  workspace-root:
+    default: .
+    description: >-
+      Workspace root path that is either an absolute path or a path relative to
+      the working directory. Defaults to '.' (the working directory)
+    type: string
 steps:
   - checkout
   - run:
@@ -24,3 +38,10 @@ steps:
         PARAM_OUTPUTDIR: <<parameters.outputdir>>
       name: Render templates
       command: <<include(scripts/render.py)>>
+  - when:
+      condition: << parameters.persist-workspace >>
+      steps:
+        - persist_to_workspace:
+            paths:
+              - << parameters.workspace-path >>
+            root: << parameters.workspace-root >>
