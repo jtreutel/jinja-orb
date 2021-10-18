@@ -8,14 +8,14 @@ usage:
   orbs:
     jinja: jtreutel/jinja@0.1.1
   jobs:
-    render-file:              # Render a single file
+    render-file:                      # Render a single file
       executor: jinja/default
       steps:
         - checkout
         - jinja/render:
             path: templates/foo.j2
             outputdir: rendered/
-    render-directory:         # Render a directory full of files
+    render-directory:                 # Render a directory full of files
       executor: jinja/default
       steps:
         - checkout
